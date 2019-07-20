@@ -9,12 +9,26 @@ import (
 	"github.com/magefile/mage/sh"
 )
 
-// BuildWindows build the program's executable for Windows.
+const (
+	teclaCmd = "./server/cmd/tecla/main.go"
+
+	windowsExecutable = "./out/windows/tecla.exe"
+)
+
+// RunWindows runs the Windows executable.
+func RunWindows() error {
+	mg.Deps(BuildWindows)
+
+	fmt.Println("Running the executable for Windows...")
+	return sh.Run(windowsExecutable)
+}
+
+// BuildWindows builds the program's executable for Windows.
 func BuildWindows() error {
 	mg.Deps(InstallServerDependencies)
 
 	fmt.Println("Building executable for Windows...")
-	return sh.Run("go", "build", "-o", "./out/windows/tecla.exe", "./server/cmd/tecla/main.go")
+	return sh.Run("go", "build", "-o", windowsExecutable, teclaCmd)
 }
 
 // TestServer tests the server packages.
