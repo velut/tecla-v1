@@ -1,4 +1,4 @@
-module github.com/velut/tecla/server
+module github.com/velut/tecla
 
 go 1.12
 
