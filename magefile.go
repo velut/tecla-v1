@@ -63,7 +63,7 @@ func (Build) Windows() error {
 	mg.Deps(installServerDependencies)
 
 	fmt.Println("Building Tecla for Windows...")
-	return build(windowsEnv, windowsExecutable)
+	return build(windowsEnv, windowsExecutable, "-ldflags", "-H=windowsgui")
 }
 
 // Builds Tecla for Linux.
@@ -74,10 +74,13 @@ func (Build) Linux() error {
 	return build(linuxEnv, linuxExecutable)
 }
 
-func build(env env, executable string) error {
-	return sh.RunWith(
-		env, "go", "build", "-v", "-o", executable, teclaCmd,
-	)
+func build(env env, executable string, args ...string) error {
+	goArgs := []string{
+		"build", "-v", "-o", executable, teclaCmd,
+	}
+	// Insert custom args between "build" and "-v"
+	goArgs = append(goArgs[:1], append(args, goArgs[1:]...)...)
+	return sh.RunWith(env, "go", goArgs...)
 }
 
 // Test namespace
