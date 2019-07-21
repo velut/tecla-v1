@@ -3,6 +3,7 @@ package gui
 import (
 	"net/url"
 	"reflect"
+	"runtime"
 	"strings"
 
 	"github.com/zserge/lorca"
@@ -13,7 +14,7 @@ import (
 // Open opens the GUI window with the given width and height,
 // then binds the API methods, and blocks until the GUI is closed.
 func Open(apiImpl core.API, width, height int) error {
-	ui, err := lorca.New("data:text/html,"+url.PathEscape(loadingPage), "", width, height)
+	ui, err := lorca.New(getLoadingPage(), "", width, height, getArgs()...)
 	if err != nil {
 		return err
 	}
@@ -42,4 +43,16 @@ func Open(apiImpl core.API, width, height int) error {
 
 	<-ui.Done()
 	return nil
+}
+
+func getLoadingPage() string {
+	return "data:text/html," + url.PathEscape(loadingPage)
+}
+
+func getArgs() []string {
+	args := []string{}
+	if runtime.GOOS == "linux" {
+		args = append(args, "--class=Tecla")
+	}
+	return args
 }
