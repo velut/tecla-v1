@@ -15,4 +15,4 @@
 .vscode/
 
 # Builds output
-./out
+out/
