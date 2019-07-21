@@ -14,8 +14,8 @@
 # VsCode
 .vscode/
 
-# Builds output
-out/
+# Build directory
+build/
 
 # Client
 client/node_modules/

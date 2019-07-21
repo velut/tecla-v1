@@ -14,14 +14,14 @@ var (
 	teclaCmd = "./server/cmd/tecla/main.go"
 
 	// Windows build options
-	windowsExecutable = "./out/windows/tecla.exe"
+	windowsExecutable = "./build/windows/tecla.exe"
 	windowsEnv        = env{
 		"GOOS":   "windows",
 		"GOARCH": "amd64",
 	}
 
 	// Linux build options
-	linuxExecutable = "./out/linux/tecla"
+	linuxExecutable = "./build/linux/tecla"
 	linuxEnv        = env{
 		"GOOS":   "linux",
 		"GOARCH": "amd64",
