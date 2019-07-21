@@ -31,41 +31,46 @@ var (
 // env represents environment variables.
 type env map[string]string
 
-// BuildAll builds the program's executable for all platforms.
-func BuildAll() {
-	mg.Deps(BuildWindows)
-	mg.Deps(BuildLinux)
-}
+// Run namespace
+type Run mg.Namespace
 
-// RunWindows runs the Windows executable.
-func RunWindows() error {
-	mg.Deps(BuildWindows)
+// Builds Tecla for Windows and runs it.
+func (Run) Windows() error {
+	mg.Deps(Build.Windows)
 
-	fmt.Println("Running the executable for Windows...")
+	fmt.Println("Running Tecla for Windows...")
 	return sh.Run(windowsExecutable)
 }
 
-// BuildWindows builds the program's executable for Windows.
-func BuildWindows() error {
-	mg.Deps(InstallServerDependencies)
+// Builds Tecla for Linux and runs it.
+func (Run) Linux() error {
+	mg.Deps(Build.Linux)
 
-	fmt.Println("Building executable for Windows...")
-	return build(windowsEnv, windowsExecutable)
-}
-
-// RunLinux runs the Linux executable.
-func RunLinux() error {
-	mg.Deps(BuildLinux)
-
-	fmt.Println("Running the executable for Linux...")
+	fmt.Println("Running Tecla for Linux...")
 	return sh.Run(linuxExecutable)
 }
 
-// BuildLinux builds the program's executable for Linux.
-func BuildLinux() error {
-	mg.Deps(InstallServerDependencies)
+// Build namespace
+type Build mg.Namespace
 
-	fmt.Println("Building executable for Linux...")
+// Builds Tecla for all platforms.
+func (Build) All() {
+	mg.Deps(Build.Windows, Build.Linux)
+}
+
+// Builds Tecla for Windows.
+func (Build) Windows() error {
+	mg.Deps(installServerDependencies)
+
+	fmt.Println("Building Tecla for Windows...")
+	return build(windowsEnv, windowsExecutable)
+}
+
+// Builds Tecla for Linux.
+func (Build) Linux() error {
+	mg.Deps(installServerDependencies)
+
+	fmt.Println("Building Tecla for Linux...")
 	return build(linuxEnv, linuxExecutable)
 }
 
@@ -75,16 +80,19 @@ func build(env env, executable string) error {
 	)
 }
 
-// TestServer tests the server packages.
-func TestServer() error {
-	mg.Deps(InstallServerDependencies)
+// Test namespace
+type Test mg.Namespace
+
+// Tests the server packages.
+func (Test) Server() error {
+	mg.Deps(installServerDependencies)
 
 	fmt.Println("Testing server packages...")
 	return sh.Run("go", "test", "-v", "-race", "./server/pkg/...")
 }
 
-// InstallServerDependencies installs the server dependencies.
-func InstallServerDependencies() error {
+// Installs the server dependencies.
+func installServerDependencies() error {
 	fmt.Println("Installing server dependencies...")
 	return sh.Run("go", "mod", "download")
 }
