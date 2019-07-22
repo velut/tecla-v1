@@ -20,6 +20,13 @@ var (
 		"GOARCH": "amd64",
 	}
 
+	// Darwin build options
+	darwinExecutable = "./build/darwin/tecla"
+	darwinEnv        = env{
+		"GOOS":   "darwin",
+		"GOARCH": "amd64",
+	}
+
 	// Linux build options
 	linuxExecutable = "./build/linux/tecla"
 	linuxEnv        = env{
@@ -42,6 +49,14 @@ func (Run) Windows() error {
 	return sh.Run(windowsExecutable)
 }
 
+// Builds Tecla for Darwin and runs it (NOT TESTED!).
+func (Run) Darwin() error {
+	mg.Deps(Build.Darwin)
+
+	fmt.Println("Running Tecla for Darwin...")
+	return sh.Run(darwinExecutable)
+}
+
 // Builds Tecla for Linux and runs it.
 func (Run) Linux() error {
 	mg.Deps(Build.Linux)
@@ -55,7 +70,7 @@ type Build mg.Namespace
 
 // Builds Tecla for all platforms.
 func (Build) All() {
-	mg.Deps(Build.Windows, Build.Linux)
+	mg.Deps(Build.Windows, Build.Darwin, Build.Linux)
 }
 
 // Builds Tecla for Windows.
@@ -64,6 +79,14 @@ func (Build) Windows() error {
 
 	fmt.Println("Building Tecla for Windows...")
 	return build(windowsEnv, windowsExecutable, "-ldflags", "-H=windowsgui")
+}
+
+// Builds Tecla for Darwin (NOT TESTED!).
+func (Build) Darwin() error {
+	mg.Deps(installServerDependencies)
+
+	fmt.Println("Building Tecla for Darwin...")
+	return build(darwinEnv, darwinExecutable)
 }
 
 // Builds Tecla for Linux.
