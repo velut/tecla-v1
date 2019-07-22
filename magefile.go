@@ -75,7 +75,7 @@ func (Build) All() {
 
 // Builds Tecla for Windows.
 func (Build) Windows() error {
-	mg.Deps(installServerDependencies)
+	mg.Deps(Server.InstallDeps)
 
 	fmt.Println("Building Tecla for Windows...")
 	return build(windowsEnv, windowsExecutable, "-ldflags", "-H=windowsgui")
@@ -83,7 +83,7 @@ func (Build) Windows() error {
 
 // Builds Tecla for Darwin (NOT TESTED!).
 func (Build) Darwin() error {
-	mg.Deps(installServerDependencies)
+	mg.Deps(Server.InstallDeps)
 
 	fmt.Println("Building Tecla for Darwin...")
 	return build(darwinEnv, darwinExecutable)
@@ -91,7 +91,7 @@ func (Build) Darwin() error {
 
 // Builds Tecla for Linux.
 func (Build) Linux() error {
-	mg.Deps(installServerDependencies)
+	mg.Deps(Server.InstallDeps)
 
 	fmt.Println("Building Tecla for Linux...")
 	return build(linuxEnv, linuxExecutable)
@@ -106,19 +106,25 @@ func build(env env, executable string, args ...string) error {
 	return sh.RunWith(env, "go", goArgs...)
 }
 
-// Test namespace
-type Test mg.Namespace
+// Server namespace
+type Server mg.Namespace
 
-// Tests the server packages.
-func (Test) Server() error {
-	mg.Deps(installServerDependencies)
+// Runs the server tests.
+func (Server) Test() error {
+	mg.Deps(Server.InstallDeps)
 
 	fmt.Println("Testing server packages...")
 	return sh.Run("go", "test", "-v", "-race", "./server/pkg/...")
 }
 
+// Lists all server production dependencies, one per line.
+func (Server) ProdDeps() error {
+	fmt.Println("Server dependencies:")
+	return sh.RunV("go", "list", "-f", `{{ join .Deps "\n" }}`, teclaCmd)
+}
+
 // Installs the server dependencies.
-func installServerDependencies() error {
+func (Server) InstallDeps() error {
 	fmt.Println("Installing server dependencies...")
 	return sh.Run("go", "mod", "download")
 }
