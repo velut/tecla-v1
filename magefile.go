@@ -117,13 +117,13 @@ type Server mg.Namespace
 func (Server) Test() error {
 	mg.Deps(Server.InstallDeps)
 
-	fmt.Println("Testing server packages...")
+	fmt.Println("Running server tests...")
 	return sh.Run("go", "test", "-v", "-race", "./server/pkg/...")
 }
 
-// Lists all server production dependencies, one per line.
+// Lists all server production dependencies.
 func (Server) ProdDeps() error {
-	fmt.Println("Server dependencies:")
+	fmt.Println("Server production dependencies:")
 	return sh.RunV("go", "list", "-f", `{{ join .Deps "\n" }}`, teclaCmd)
 }
 
