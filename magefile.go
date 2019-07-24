@@ -19,6 +19,7 @@ var (
 		"GOOS":   "windows",
 		"GOARCH": "amd64",
 	}
+	windowsArgs = args{"-ldflags", "-H=windowsgui"}
 
 	// Darwin build options
 	darwinExecutable = "./build/darwin/tecla"
@@ -37,6 +38,9 @@ var (
 
 // env represents environment variables.
 type env map[string]string
+
+// args represents custom arguments.
+type args []string
 
 // Run namespace
 type Run mg.Namespace
@@ -78,7 +82,7 @@ func (Build) Windows() error {
 	mg.Deps(Server.InstallDeps)
 
 	fmt.Println("Building Tecla for Windows...")
-	return build(windowsEnv, windowsExecutable, "-ldflags", "-H=windowsgui")
+	return build(windowsEnv, windowsExecutable, windowsArgs...)
 }
 
 // Builds Tecla for Darwin (NOT TESTED!).
