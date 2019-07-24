@@ -4,6 +4,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/magefile/mage/mg"
 	"github.com/magefile/mage/sh"
@@ -131,4 +132,52 @@ func (Server) ProdDeps() error {
 func (Server) InstallDeps() error {
 	fmt.Println("Installing server dependencies...")
 	return sh.Run("go", "mod", "download")
+}
+
+// Client namespace
+type Client mg.Namespace
+
+// Serves the client for development.
+// This command assumes that client dependencies are already installed.
+func (Client) Serve() error {
+	mg.Deps(Client.chdir)
+
+	fmt.Println("Serving client...")
+	return sh.RunV("npm", "run", "serve")
+}
+
+// Builds the client for deployment.
+func (Client) Build() error {
+	mg.Deps(Client.chdir, Client.InstallDeps)
+
+	fmt.Println("Building client...")
+	return sh.RunV("npm", "run", "build")
+}
+
+// Lints the client.
+func (Client) Lint() error {
+	mg.Deps(Client.chdir)
+
+	fmt.Println("Linting client...")
+	return sh.RunV("npm", "run", "lint")
+}
+
+// Lists all client production dependencies.
+func (Client) ProdDeps() error {
+	mg.Deps(Client.chdir)
+
+	fmt.Println("Client production dependencies:")
+	return sh.RunV("npx", "license-checker", "--production")
+}
+
+// Installs the client dependencies.
+func (Client) InstallDeps() error {
+	mg.Deps(Client.chdir)
+
+	fmt.Println("Installing client dependencies...")
+	return sh.RunV("npm", "install")
+}
+
+func (Client) chdir() error {
+	return os.Chdir("./client")
 }
