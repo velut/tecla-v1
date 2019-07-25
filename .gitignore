@@ -20,3 +20,6 @@ build/
 # Client
 client/node_modules/
 client/dist/
+
+# Client static go file
+statik/
