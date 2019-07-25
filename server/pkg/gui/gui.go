@@ -1,58 +1,203 @@
 package gui
 
 import (
+	"net/http"
 	"net/url"
-	"reflect"
 	"runtime"
-	"strings"
+	"time"
 
+	"github.com/rakyll/statik/fs"
 	"github.com/zserge/lorca"
 
-	"github.com/velut/tecla/server/pkg/core"
+	// Import generated client static files for production release.
+	_ "github.com/velut/tecla/statik"
 )
 
-// Open opens the GUI window with the given width and height,
-// then binds the API methods, and blocks until the GUI is closed.
-func Open(apiImpl core.API, width, height int) error {
-	ui, err := lorca.New(getLoadingPage(), "", width, height, getArgs()...)
-	if err != nil {
+const defaultClientDevServerAddr = "http://localhost:8080"
+
+const defaultClientProdServerAddr = "http://localhost:5920"
+const defaultClientProdServerPort = ":5920"
+
+// GUI represents the GUI interface.
+type GUI struct {
+	ui      lorca.UI
+	server  *http.Server
+	options *Options
+}
+
+// Options represents the options available to configure the GUI.
+type Options struct {
+	Width            int         // GUI width
+	Height           int         // GUI height
+	BoundFuncs       []BoundFunc // Go functions to bind to the GUI
+	ProductionClient bool        // Use production client for stand-alone release
+}
+
+// BoundFunc represents a Go function or method that will be callable from the GUI.
+type BoundFunc interface {
+	// Name returns the name to use for the function's bind.
+	Name() string
+
+	// Func returns the function to call.
+	// The function signature must be one of those supported by Lorca.
+	Func() interface{}
+}
+
+// NewGUI returns a new GUI.
+// Options are required.
+func NewGUI(options *Options) *GUI {
+	return &GUI{
+		options: options,
+	}
+}
+
+// Start opens the GUI, binds the required functions,
+// loads the client, and then blocks until the GUI is closed.
+func (g *GUI) Start() error {
+	if err := g.start(); err != nil {
 		return err
 	}
-	defer ui.Close()
+	defer g.close()
 
-	// Collect API methods' names
-	interfaceType := reflect.TypeOf((*core.API)(nil)).Elem()
-	var methodNames []string
-	for i := 0; i < interfaceType.NumMethod(); i++ {
-		methodNames = append(methodNames, interfaceType.Method(i).Name)
-	}
-
-	// Bind API methods
-	implType := reflect.ValueOf(apiImpl)
-	for _, name := range methodNames {
-		method := implType.MethodByName(name).Interface()
-		methodName := strings.ToLower(string(name[0])) + name[1:]
-		err = ui.Bind(methodName, method)
-		if err != nil {
-			return err
-		}
-	}
-
-	// TODO load client
-	_ = ui.Load("http://localhost:8080")
-
-	<-ui.Done()
+	g.wait()
 	return nil
 }
 
-func getLoadingPage() string {
+func (g *GUI) start() error {
+	if err := g.open(); err != nil {
+		return err
+	}
+
+	if err := g.bindFuncs(); err != nil {
+		return err
+	}
+
+	if err := g.loadClient(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (g *GUI) open() error {
+	ui, err := lorca.New(
+		g.loadingPage(),
+		g.profileDir(),
+		g.width(),
+		g.height(),
+		g.chromeArgs()...,
+	)
+	if err != nil {
+		return err
+	}
+
+	g.ui = ui
+	return nil
+}
+
+func (g *GUI) loadingPage() string {
 	return "data:text/html," + url.PathEscape(loadingPage)
 }
 
-func getArgs() []string {
-	args := []string{}
+func (g *GUI) profileDir() string {
+	// Create a temporary profile directory.
+	return ""
+}
+
+func (g *GUI) width() int {
+	return g.options.Width
+}
+
+func (g *GUI) height() int {
+	return g.options.Height
+}
+
+func (g *GUI) chromeArgs() []string {
+	var args []string
 	if runtime.GOOS == "linux" {
+		// Differentiate Tecla from other X applications.
 		args = append(args, "--class=Tecla")
 	}
 	return args
+}
+
+func (g *GUI) bindFuncs() error {
+	funcs := g.options.BoundFuncs
+	for _, f := range funcs {
+		if err := g.ui.Bind(f.Name(), f.Func()); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (g *GUI) loadClient() error {
+	var clientAddr string
+	prodMode := g.options.ProductionClient
+
+	if prodMode {
+		if err := g.serveClient(defaultClientProdServerPort); err != nil {
+			return err
+		}
+		clientAddr = defaultClientProdServerAddr
+	} else {
+		clientAddr = defaultClientDevServerAddr
+	}
+
+	// Wait for server to start.
+	// In production mode, loading the client immediately sometimes fails in Chrome.
+	time.Sleep(100 * time.Millisecond)
+
+	if err := g.ui.Load(clientAddr); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (g *GUI) serveClient(addr string) error {
+	// Load client from binary.
+	clientFS, err := fs.New()
+	if err != nil {
+		return err
+	}
+
+	s := &http.Server{
+		Addr:    addr,
+		Handler: http.FileServer(clientFS),
+	}
+
+	// Serve client.
+	go func() {
+		_ = s.ListenAndServe()
+	}()
+
+	return nil
+}
+
+func (g *GUI) wait() {
+	<-g.ui.Done()
+}
+
+func (g *GUI) close() error {
+	if err := g.closeUI(); err != nil {
+		return err
+	}
+
+	if err := g.closeServer(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (g *GUI) closeUI() error {
+	return g.ui.Close()
+}
+
+func (g *GUI) closeServer() error {
+	if g.server != nil {
+		return g.server.Close()
+	}
+	return nil
 }
