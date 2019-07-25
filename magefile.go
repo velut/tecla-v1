@@ -51,7 +51,7 @@ func (Run) Windows() error {
 	mg.Deps(Build.Windows)
 
 	fmt.Println("Running Tecla for Windows...")
-	return sh.Run(windowsExecutable)
+	return sh.RunV(windowsExecutable)
 }
 
 // Builds Tecla for Darwin and runs it (NOT TESTED!).
@@ -59,7 +59,7 @@ func (Run) Darwin() error {
 	mg.Deps(Build.Darwin)
 
 	fmt.Println("Running Tecla for Darwin...")
-	return sh.Run(darwinExecutable)
+	return sh.RunV(darwinExecutable)
 }
 
 // Builds Tecla for Linux and runs it.
@@ -67,7 +67,7 @@ func (Run) Linux() error {
 	mg.Deps(Build.Linux)
 
 	fmt.Println("Running Tecla for Linux...")
-	return sh.Run(linuxExecutable)
+	return sh.RunV(linuxExecutable)
 }
 
 // Build namespace
@@ -119,7 +119,7 @@ func (Server) Test() error {
 	mg.Deps(Server.InstallDeps)
 
 	fmt.Println("Running server tests...")
-	return sh.Run("go", "test", "-v", "-race", "./server/pkg/...")
+	return sh.RunV("go", "test", "-v", "-race", "./server/pkg/...")
 }
 
 // Lists all server production dependencies.
@@ -131,7 +131,7 @@ func (Server) ProdDeps() error {
 // Installs the server dependencies.
 func (Server) InstallDeps() error {
 	fmt.Println("Installing server dependencies...")
-	return sh.Run("go", "mod", "download")
+	return sh.RunV("go", "mod", "download")
 }
 
 // Client namespace
