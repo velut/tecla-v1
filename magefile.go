@@ -122,6 +122,13 @@ func (Server) Test() error {
 	return sh.RunV("go", "test", "-v", "-race", "./server/pkg/...")
 }
 
+// Lints the server.
+// Requires golangci-lint.
+func (Server) Lint() error {
+	fmt.Println("Linting server...")
+	return sh.RunV("golangci-lint", "run", "--enable-all")
+}
+
 // Lists all server production dependencies.
 func (Server) ProdDeps() error {
 	fmt.Println("Server production dependencies:")
