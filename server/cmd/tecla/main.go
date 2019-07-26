@@ -13,8 +13,6 @@ func main() {
 }
 
 func run() error {
-	app := app.NewDefaultApp()
-	defer app.Close()
-
+	app := app.NewApp(app.DefaultOptions())
 	return app.Run()
 }
