@@ -27,20 +27,20 @@ type GUI struct {
 
 // Options represents the options available to configure the GUI.
 type Options struct {
-	Width            int         // GUI width
-	Height           int         // GUI height
-	BoundFuncs       []BoundFunc // Go functions to bind to the GUI
-	ProductionClient bool        // Use production client for stand-alone release
+	Width            int          // GUI width
+	Height           int          // GUI height
+	BoundFuncs       []*BoundFunc // Go functions to bind to the GUI
+	ProductionClient bool         // Use production client for stand-alone release
 }
 
 // BoundFunc represents a Go function or method that will be callable from the GUI.
-type BoundFunc interface {
-	// Name returns the name to use for the function's bind.
-	Name() string
+type BoundFunc struct {
+	// Binding name
+	Name string
 
-	// Func returns the function to call.
-	// The function signature must be one of those supported by Lorca.
-	Func() interface{}
+	// Bound function.
+	// Function signatures must be the ones supported by Lorca.
+	Func interface{}
 }
 
 // NewGUI returns a new GUI.
@@ -124,7 +124,7 @@ func (g *GUI) chromeArgs() []string {
 func (g *GUI) bindFuncs() error {
 	funcs := g.options.BoundFuncs
 	for _, f := range funcs {
-		if err := g.ui.Bind(f.Name(), f.Func()); err != nil {
+		if err := g.ui.Bind(f.Name, f.Func); err != nil {
 			return err
 		}
 	}
