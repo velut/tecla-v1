@@ -94,7 +94,7 @@ func (a *App) organizerMethods() []*gui.BoundFunc {
 func extractMethods(api reflect.Type, impl interface{}) []*gui.BoundFunc {
 	methodNames := extractAPIMethodNames(api)
 
-	var bfs []*gui.BoundFunc
+	bfs := []*gui.BoundFunc{}
 	implValue := reflect.ValueOf(impl)
 	for _, name := range methodNames {
 		// Binding name starts with a lower case character.
@@ -111,7 +111,7 @@ func extractMethods(api reflect.Type, impl interface{}) []*gui.BoundFunc {
 }
 
 func extractAPIMethodNames(api reflect.Type) []string {
-	var names []string
+	names := []string{}
 	for i := 0; i < api.NumMethod(); i++ {
 		names = append(names, api.Method(i).Name)
 	}
