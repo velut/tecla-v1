@@ -178,6 +178,16 @@ func (Client) Serve() error {
 	return npmRunServe()
 }
 
+// Builds the static go package embedding the client.
+func (Client) BuildStatic() error {
+	wd, _ := os.Getwd()
+	mg.Deps(Client.Build)
+
+	fmt.Println("Building client static package...")
+	os.Chdir(wd)
+	return sh.RunV("statik", "-src=./client/dist")
+}
+
 // Builds the client for deployment.
 func (Client) Build() error {
 	mg.Deps(Client.chdir, Client.InstallDeps)
