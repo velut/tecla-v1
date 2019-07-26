@@ -43,6 +43,11 @@ type env map[string]string
 // args represents custom arguments.
 type args []string
 
+func init() {
+	// Always run Mage in verbose mode.
+	os.Setenv("MAGEFILE_VERBOSE", "true")
+}
+
 // Run namespace
 type Run mg.Namespace
 
