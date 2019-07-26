@@ -10,10 +10,32 @@ import (
 	"github.com/magefile/mage/sh"
 )
 
+// Go commands
+var (
+	goBuild        = sh.RunCmd("go", "build", "-v")
+	goTest         = sh.RunCmd("go", "test", "-v", "-race")
+	goLint         = sh.RunCmd("golangci-lint", "run", "--enable-all")
+	goListProdDeps = sh.RunCmd("go", "list", "-f", `{{ join .Deps "\n" }}`)
+	goModDownload  = sh.RunCmd("go", "mod", "download")
+)
+
+// Npm commands
+var (
+	npmRunServe     = sh.RunCmd("npm", "run", "serve")
+	npmRunBuild     = sh.RunCmd("npm", "run", "build")
+	npmRunLint      = sh.RunCmd("npm", "run", "lint")
+	npmListProdDeps = sh.RunCmd("npx", "license-checker", "--production")
+	npmInstall      = sh.RunCmd("npm", "install")
+)
+
+// Main packages
 var (
 	// Tecla's main package
 	teclaCmd = "./server/cmd/tecla/main.go"
+)
 
+// Build environments
+var (
 	// Windows build options
 	windowsExecutable = "./build/windows/tecla.exe"
 	windowsEnv        = env{
@@ -108,12 +130,10 @@ func (Build) Linux() error {
 }
 
 func build(env env, executable string, args ...string) error {
-	goArgs := []string{
-		"build", "-v", "-o", executable, teclaCmd,
-	}
-	// Insert custom args between "build" and "-v"
-	goArgs = append(goArgs[:1], append(args, goArgs[1:]...)...)
-	return sh.RunWith(env, "go", goArgs...)
+	// Insert args after build and before output flag
+	args = append([]string{"build", "-v"}, args...)
+	args = append(args, []string{"-o", executable, teclaCmd}...)
+	return sh.RunWith(env, "go", args...)
 }
 
 // Server namespace
@@ -124,26 +144,26 @@ func (Server) Test() error {
 	mg.Deps(Server.InstallDeps)
 
 	fmt.Println("Running server tests...")
-	return sh.RunV("go", "test", "-v", "-race", "./server/pkg/...")
+	return goTest("./server/pkg/...")
 }
 
 // Lints the server.
 // Requires golangci-lint.
 func (Server) Lint() error {
 	fmt.Println("Linting server...")
-	return sh.RunV("golangci-lint", "run", "--enable-all")
+	return goLint("./server/...")
 }
 
 // Lists all server production dependencies.
 func (Server) ProdDeps() error {
 	fmt.Println("Server production dependencies:")
-	return sh.RunV("go", "list", "-f", `{{ join .Deps "\n" }}`, teclaCmd)
+	return goListProdDeps(teclaCmd)
 }
 
 // Installs the server dependencies.
 func (Server) InstallDeps() error {
 	fmt.Println("Installing server dependencies...")
-	return sh.RunV("go", "mod", "download")
+	return goModDownload()
 }
 
 // Client namespace
@@ -155,7 +175,7 @@ func (Client) Serve() error {
 	mg.Deps(Client.chdir)
 
 	fmt.Println("Serving client...")
-	return sh.RunV("npm", "run", "serve")
+	return npmRunServe()
 }
 
 // Builds the client for deployment.
@@ -163,7 +183,7 @@ func (Client) Build() error {
 	mg.Deps(Client.chdir, Client.InstallDeps)
 
 	fmt.Println("Building client...")
-	return sh.RunV("npm", "run", "build")
+	return npmRunBuild()
 }
 
 // Lints the client.
@@ -171,7 +191,7 @@ func (Client) Lint() error {
 	mg.Deps(Client.chdir)
 
 	fmt.Println("Linting client...")
-	return sh.RunV("npm", "run", "lint")
+	return npmRunLint()
 }
 
 // Lists all client production dependencies.
@@ -179,7 +199,7 @@ func (Client) ProdDeps() error {
 	mg.Deps(Client.chdir)
 
 	fmt.Println("Client production dependencies:")
-	return sh.RunV("npx", "license-checker", "--production")
+	return npmListProdDeps()
 }
 
 // Installs the client dependencies.
@@ -187,7 +207,7 @@ func (Client) InstallDeps() error {
 	mg.Deps(Client.chdir)
 
 	fmt.Println("Installing client dependencies...")
-	return sh.RunV("npm", "install")
+	return npmInstall()
 }
 
 func (Client) chdir() error {
