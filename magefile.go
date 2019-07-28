@@ -224,9 +224,18 @@ func (Client) InstallDeps() error {
 	mg.Deps(Client.chdir)
 
 	fmt.Println("Installing client dependencies...")
+	if nodeModulesDirExists() {
+		fmt.Println("'node_modules' directory exists, skipping npm install")
+		return nil
+	}
 	return npmInstall()
 }
 
 func (Client) chdir() error {
 	return os.Chdir("./client")
+}
+
+func nodeModulesDirExists() bool {
+	info, _ := os.Stat("./node_modules")
+	return info != nil && info.Mode().IsDir()
 }
