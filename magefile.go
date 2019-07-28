@@ -116,7 +116,7 @@ func (Build) All() {
 
 // Builds Tecla for Windows.
 func (Build) Windows() error {
-	mg.Deps(Server.InstallDeps)
+	mg.Deps(Build.preBuild)
 
 	fmt.Println("Building Tecla for Windows...")
 	return build(windowsEnv, windowsExecutable, windowsArgs...)
@@ -124,7 +124,7 @@ func (Build) Windows() error {
 
 // Builds Tecla for Darwin (NOT TESTED!).
 func (Build) Darwin() error {
-	mg.Deps(Server.InstallDeps)
+	mg.Deps(Build.preBuild)
 
 	fmt.Println("Building Tecla for Darwin...")
 	return build(darwinEnv, darwinExecutable)
@@ -132,10 +132,14 @@ func (Build) Darwin() error {
 
 // Builds Tecla for Linux.
 func (Build) Linux() error {
-	mg.Deps(Server.InstallDeps)
+	mg.Deps(Build.preBuild)
 
 	fmt.Println("Building Tecla for Linux...")
 	return build(linuxEnv, linuxExecutable)
+}
+
+func (Build) preBuild() {
+	mg.Deps(Server.InstallDeps, Client.BuildStatic)
 }
 
 func build(env env, executable string, args ...string) error {
@@ -189,7 +193,7 @@ func (Client) Serve() error {
 
 // Builds the static go package embedding the client.
 func (Client) BuildStatic() error {
-	mg.Deps(Client.Build)
+	mg.Deps(Client.Build, Tools.InstallStatik)
 
 	fmt.Println("Building client static package...")
 	os.Chdir(projectRootDir)
@@ -246,9 +250,12 @@ type Tools mg.Namespace
 
 // Installs all build tools.
 func (Tools) Install() {
-	mg.Deps(Tools.installStatik)
+	fmt.Println("Installing build tools...")
+	mg.Deps(Tools.InstallStatik)
 }
 
-func (Tools) installStatik() error {
+// Installs the statik binary.
+func (Tools) InstallStatik() error {
+	fmt.Println("Installing statik...")
 	return goGet("github.com/rakyll/statik")
 }
