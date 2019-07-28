@@ -16,7 +16,7 @@ export enum Routes {
 }
 
 export default new Router({
-    mode: 'history',
+    mode: 'hash',
     base: process.env.BASE_URL,
     routes: [
         {
