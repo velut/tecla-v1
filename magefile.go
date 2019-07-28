@@ -28,6 +28,14 @@ var (
 	npmInstall      = sh.RunCmd("npm", "install")
 )
 
+// Project root directory
+var (
+	projectRootDir = func() string {
+		dir, _ := os.Getwd()
+		return dir
+	}()
+)
+
 // Main packages
 var (
 	// Tecla's main package
@@ -180,11 +188,10 @@ func (Client) Serve() error {
 
 // Builds the static go package embedding the client.
 func (Client) BuildStatic() error {
-	wd, _ := os.Getwd()
 	mg.Deps(Client.Build)
 
 	fmt.Println("Building client static package...")
-	os.Chdir(wd)
+	os.Chdir(projectRootDir)
 	return sh.RunV("statik", "-src=./client/dist")
 }
 
