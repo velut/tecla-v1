@@ -12,6 +12,7 @@ import (
 
 // Go commands
 var (
+	goGet          = sh.RunCmd("go", "get", "-v")
 	goBuild        = sh.RunCmd("go", "build", "-v")
 	goTest         = sh.RunCmd("go", "test", "-v", "-race")
 	goLint         = sh.RunCmd("golangci-lint", "run", "--enable-all")
@@ -238,4 +239,16 @@ func (Client) chdir() error {
 func nodeModulesDirExists() bool {
 	info, _ := os.Stat("./node_modules")
 	return info != nil && info.Mode().IsDir()
+}
+
+// Tools namespace
+type Tools mg.Namespace
+
+// Installs all build tools.
+func (Tools) Install() {
+	mg.Deps(Tools.installStatik)
+}
+
+func (Tools) installStatik() error {
+	return goGet("github.com/rakyll/statik")
 }
