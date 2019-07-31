@@ -6,11 +6,9 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/rakyll/statik/fs"
-	"github.com/zserge/lorca"
+	"github.com/velut/tecla/static/client"
 
-	// Import generated client static files for production release.
-	_ "github.com/velut/tecla/statik"
+	"github.com/zserge/lorca"
 )
 
 const defaultClientDevServerAddr = "http://localhost:8080"
@@ -157,7 +155,7 @@ func (g *GUI) loadClient() error {
 
 func (g *GUI) serveClient(addr string) error {
 	// Load client from binary.
-	clientFS, err := fs.New()
+	clientFS, err := client.Assets()
 	if err != nil {
 		return err
 	}
