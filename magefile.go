@@ -5,6 +5,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/magefile/mage/mg"
 	"github.com/magefile/mage/sh"
@@ -37,9 +38,12 @@ var (
 // Project root directory
 var (
 	projectRootDir = func() string {
-		dir, _ := os.Getwd()
+		dir, err := os.Getwd()
+		check(err)
 		return dir
 	}()
+
+	clientDir = filepath.Join(projectRootDir, "client")
 )
 
 // Main packages
@@ -116,7 +120,11 @@ type Build mg.Namespace
 
 // Builds Tecla for all platforms.
 func (Build) All() {
-	mg.Deps(Build.Windows, Build.Darwin, Build.Linux)
+	mg.SerialDeps(
+		Build.Windows,
+		Build.Darwin,
+		Build.Linux,
+	)
 }
 
 // Builds Tecla for Windows.
@@ -144,7 +152,18 @@ func (Build) Linux() error {
 }
 
 func (Build) preBuild() {
-	mg.Deps(Server.InstallDeps, Client.BuildStatic)
+	fmt.Println("Executing pre-build operations...")
+	mg.SerialDeps(
+		Tools.Install,
+		Server.InstallDeps,
+		Client.Build,
+		Static.Generate,
+		Build.chdir,
+	)
+}
+
+func (Build) chdir() error {
+	return os.Chdir(projectRootDir)
 }
 
 func build(env env, executable string, args ...string) error {
@@ -196,21 +215,21 @@ func (Client) Serve() error {
 	return npmRunServe()
 }
 
-// Builds the static go package embedding the client.
-func (Client) BuildStatic() error {
-	mg.Deps(Client.Build, Tools.installStatik)
-
-	fmt.Println("Building client static package...")
-	os.Chdir(projectRootDir)
-	return statik("-src=./client/dist")
-}
-
 // Builds the client for deployment.
 func (Client) Build() error {
 	mg.Deps(Client.chdir, Client.InstallDeps)
 
 	fmt.Println("Building client...")
+	if clientDistDirExists() {
+		fmt.Println("'dist' directory exists, skipping npm build")
+		return nil
+	}
 	return npmRunBuild()
+}
+
+func clientDistDirExists() bool {
+	info, _ := os.Stat(filepath.Join(clientDir, "dist"))
+	return info != nil && info.Mode().IsDir()
 }
 
 // Lints the client.
@@ -242,11 +261,11 @@ func (Client) InstallDeps() error {
 }
 
 func (Client) chdir() error {
-	return os.Chdir("./client")
+	return os.Chdir(clientDir)
 }
 
 func nodeModulesDirExists() bool {
-	info, _ := os.Stat("./node_modules")
+	info, _ := os.Stat(filepath.Join(clientDir, "node_modules"))
 	return info != nil && info.Mode().IsDir()
 }
 
@@ -255,13 +274,32 @@ type Static mg.Namespace
 
 // Generates static packages.
 func (Static) Generate() {
-	mg.Deps(Static.generateInfo)
+	fmt.Println("Generating static packages...")
+	mg.SerialDeps(
+		Static.chdir,
+		Static.generateInfo,
+		Static.generateClient,
+		Static.test,
+	)
 }
 
 func (Static) generateInfo() error {
-	mg.Deps(Tools.installStatik)
-
+	fmt.Println("Generating static info package...")
 	return statik("-src=./static/info/license", "-dest=./static", "-p=info")
+}
+
+func (Static) generateClient() error {
+	fmt.Println("Generating static client package...")
+	return statik("-src=./client/dist", "-dest=./static", "-p=client")
+}
+
+func (Static) chdir() error {
+	return os.Chdir(projectRootDir)
+}
+
+func (Static) test() error {
+	fmt.Println("Testing static packages...")
+	return goTest("./static/...")
 }
 
 // Tools namespace
@@ -277,4 +315,10 @@ func (Tools) Install() {
 func (Tools) installStatik() error {
 	fmt.Println("Installing statik...")
 	return goGet("github.com/rakyll/statik")
+}
+
+func check(err error) {
+	if err != nil {
+		panic(err)
+	}
 }
