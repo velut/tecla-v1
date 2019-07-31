@@ -23,3 +23,6 @@ client/dist/
 
 # Client static go file
 statik/
+
+# Static packages
+static/info/statik.go
