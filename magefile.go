@@ -35,7 +35,7 @@ var (
 	statik = sh.RunCmd("statik")
 )
 
-// Project root directory
+// Project directories
 var (
 	projectRootDir = func() string {
 		dir, err := os.Getwd()
@@ -43,7 +43,13 @@ var (
 		return dir
 	}()
 
-	clientDir = filepath.Join(projectRootDir, "client")
+	buildDir = filepath.Join(projectRootDir, "build")
+
+	staticDir = filepath.Join(projectRootDir, "static")
+
+	clientDir            = filepath.Join(projectRootDir, "client")
+	clientDistDir        = filepath.Join(clientDir, "dist")
+	clientNodeModulesDir = filepath.Join(clientDir, "node_modules")
 )
 
 // Main packages
@@ -221,14 +227,14 @@ func (Client) Build() error {
 
 	fmt.Println("Building client...")
 	if clientDistDirExists() {
-		fmt.Println("'dist' directory exists, skipping npm build")
+		fmt.Println("dist directory exists, skipping npm build")
 		return nil
 	}
 	return npmRunBuild()
 }
 
 func clientDistDirExists() bool {
-	info, _ := os.Stat(filepath.Join(clientDir, "dist"))
+	info, _ := os.Stat(clientDistDir)
 	return info != nil && info.Mode().IsDir()
 }
 
@@ -254,7 +260,7 @@ func (Client) InstallDeps() error {
 
 	fmt.Println("Installing client dependencies...")
 	if nodeModulesDirExists() {
-		fmt.Println("'node_modules' directory exists, skipping npm install")
+		fmt.Println("node_modules directory exists, skipping npm install")
 		return nil
 	}
 	return npmInstall()
@@ -265,7 +271,7 @@ func (Client) chdir() error {
 }
 
 func nodeModulesDirExists() bool {
-	info, _ := os.Stat(filepath.Join(clientDir, "node_modules"))
+	info, _ := os.Stat(clientNodeModulesDir)
 	return info != nil && info.Mode().IsDir()
 }
 
@@ -315,6 +321,52 @@ func (Tools) Install() {
 func (Tools) installStatik() error {
 	fmt.Println("Installing statik...")
 	return goGet("github.com/rakyll/statik")
+}
+
+// Clean namespace
+type Clean mg.Namespace
+
+// Cleans everything.
+func (Clean) All() {
+	fmt.Println("Cleaning...")
+	mg.Deps(Clean.Artifacts, Clean.NodeModules)
+}
+
+// Removes build artifacts.
+func (Clean) Artifacts() {
+	fmt.Println("Removing all artifacts...")
+	mg.Deps(Clean.build, Clean.client, Clean.static)
+}
+func (Clean) build() error {
+	fmt.Println("Removing build artifacts...")
+	return sh.Rm(buildDir)
+}
+
+func (Clean) client() error {
+	fmt.Println("Removing client artifacts...")
+	return sh.Rm(clientDistDir)
+}
+
+func (Clean) static() error {
+	as := []string{
+		filepath.Join(staticDir, "client", "statik.go"),
+		filepath.Join(staticDir, "info", "statik.go"),
+	}
+
+	fmt.Println("Removing static artifacts...")
+	for _, a := range as {
+		if err := sh.Rm(a); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+// Removes node_modules directory.
+func (Clean) NodeModules() error {
+	fmt.Println("Removing node_modules directory...")
+	return sh.Rm(clientNodeModulesDir)
 }
 
 func check(err error) {
