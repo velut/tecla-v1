@@ -12,11 +12,11 @@ var (
 	description = "The interactive file organizer"
 	homepage    = "https://github.com/velut/tecla"
 	repository  = "https://github.com/velut/tecla"
-	version     = "not set" // Set by ldflags
-	commit      = "not set" // Set by ldflags
+	version     = "version not set" // Set by ldflags
+	commit      = "version not set" // Set by ldflags
 	copyright   = "Copyright (c) 2019 Edoardo Scibona"
 	noWarranty  = "This program comes with ABSOLUTELY NO WARRANTY"
-	license     = "not set" // Read from static filesystem
+	license     = "license not set" // Read from static filesystem
 )
 
 // Info lists information about the application.
