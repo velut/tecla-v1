@@ -29,6 +29,11 @@ var (
 	npmInstall      = sh.RunCmd("npm", "install")
 )
 
+// Tools
+var (
+	statik = sh.RunCmd("statik")
+)
+
 // Project root directory
 var (
 	projectRootDir = func() string {
@@ -193,11 +198,11 @@ func (Client) Serve() error {
 
 // Builds the static go package embedding the client.
 func (Client) BuildStatic() error {
-	mg.Deps(Client.Build, Tools.InstallStatik)
+	mg.Deps(Client.Build, Tools.installStatik)
 
 	fmt.Println("Building client static package...")
 	os.Chdir(projectRootDir)
-	return sh.RunV("statik", "-src=./client/dist")
+	return statik("-src=./client/dist")
 }
 
 // Builds the client for deployment.
@@ -245,17 +250,31 @@ func nodeModulesDirExists() bool {
 	return info != nil && info.Mode().IsDir()
 }
 
+// Static namespace
+type Static mg.Namespace
+
+// Generates static packages.
+func (Static) Generate() {
+	mg.Deps(Static.generateInfo)
+}
+
+func (Static) generateInfo() error {
+	mg.Deps(Tools.installStatik)
+
+	return statik("-src=./static/info/license", "-dest=./static", "-p=info")
+}
+
 // Tools namespace
 type Tools mg.Namespace
 
 // Installs all build tools.
 func (Tools) Install() {
 	fmt.Println("Installing build tools...")
-	mg.Deps(Tools.InstallStatik)
+	mg.Deps(Tools.installStatik)
 }
 
 // Installs the statik binary.
-func (Tools) InstallStatik() error {
+func (Tools) installStatik() error {
 	fmt.Println("Installing statik...")
 	return goGet("github.com/rakyll/statik")
 }
