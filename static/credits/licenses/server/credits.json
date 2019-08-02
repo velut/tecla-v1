@@ -1,0 +1,32 @@
+{
+    "credits": [
+        {
+            "name": "deque",
+            "homepage": "https://github.com/gammazero/deque"
+        },
+        {
+            "name": "fsutils-go",
+            "homepage": "https://github.com/velut/fsutils-go"
+        },
+        {
+            "name": "Go",
+            "homepage": "https://golang.org"
+        },
+        {
+            "name": "godirwalk",
+            "homepage": "https://github.com/karrick/godirwalk"
+        },
+        {
+            "name": "Lorca",
+            "homepage": "https://github.com/zserge/lorca"
+        },
+        {
+            "name": "statik",
+            "homepage": "https://github.com/rakyll/statik"
+        },
+        {
+            "name": "workerpool",
+            "homepage": "https://github.com/gammazero/workerpool"
+        }
+    ]
+}

@@ -1,0 +1,57 @@
+{
+    "credits": [
+        {
+            "name": "await-to-js",
+            "homepage": "https://github.com/scopsy/await-to-js"
+        },
+        {
+            "name": "core-js",
+            "homepage": "https://github.com/zloirock/core-js"
+        },
+        {
+            "name": "Material Design Icons",
+            "homepage": "https://material.io/resources/icons"
+        },
+        {
+            "name": "material-design-icons-iconfont",
+            "homepage": "https://github.com/jossef/material-design-icons-iconfont"
+        },
+        {
+            "name": "Roboto",
+            "homepage": "https://fonts.google.com/specimen/Roboto"
+        },
+        {
+            "name": "roboto-fontface",
+            "homepage": "https://github.com/choffmeister/roboto-fontface-bower"
+        },
+        {
+            "name": "Vue",
+            "homepage": "https://github.com/vuejs/vue"
+        },
+        {
+            "name": "vue-class-component",
+            "homepage": "https://github.com/vuejs/vue-class-component"
+        },
+        {
+            "name": "vue-property-decorator",
+            "homepage": "https://github.com/kaorun343/vue-property-decorator"
+        },
+        {
+            "name": "vue-router",
+            "homepage": "https://github.com/vuejs/vue-router"
+        },
+
+        {
+            "name": "Vuetify",
+            "homepage": "https://github.com/vuetifyjs/vuetify"
+        },
+        {
+            "name": "Vuex",
+            "homepage": "https://github.com/vuejs/vuex"
+        },
+        {
+            "name": "vuex-class",
+            "homepage": "https://github.com/ktsn/vuex-class"
+        }
+    ]
+}
