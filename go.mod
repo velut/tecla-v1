@@ -10,3 +10,5 @@ require (
 	github.com/velut/fsutils-go v0.1.3
 	github.com/zserge/lorca v0.1.8-0.20190522191526-de29b2b46dec
 )
+
+replace github.com/zserge/lorca => github.com/velut/lorca v0.1.8-0.20190721152459-0eb930ddae37
