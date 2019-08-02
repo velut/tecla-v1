@@ -284,6 +284,7 @@ func (Static) Generate() {
 	mg.SerialDeps(
 		Static.chdir,
 		Static.generateInfo,
+		Static.generateCredits,
 		Static.generateClient,
 		Static.test,
 	)
@@ -292,6 +293,11 @@ func (Static) Generate() {
 func (Static) generateInfo() error {
 	fmt.Println("Generating static info package...")
 	return statik("-src=./static/info/license", "-dest=./static", "-p=info")
+}
+
+func (Static) generateCredits() error {
+	fmt.Println("Generating static credits package...")
+	return statik("-src=./static/credits/licenses", "-dest=./static", "-p=credits")
 }
 
 func (Static) generateClient() error {

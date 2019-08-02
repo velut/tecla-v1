@@ -23,4 +23,5 @@ client/dist/
 
 # Static packages
 static/info/statik.go
+static/credits/statik.go
 static/client/statik.go
