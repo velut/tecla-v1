@@ -357,6 +357,7 @@ func (Clean) static() error {
 	as := []string{
 		filepath.Join(staticDir, "client", "statik.go"),
 		filepath.Join(staticDir, "info", "statik.go"),
+		filepath.Join(staticDir, "credits", "statik.go"),
 	}
 
 	fmt.Println("Removing static artifacts...")
