@@ -4,6 +4,10 @@ import (
 	"reflect"
 	"strings"
 
+	"github.com/velut/tecla/static/credits"
+
+	"github.com/velut/tecla/static/info"
+
 	"github.com/velut/tecla/server/pkg/core"
 	"github.com/velut/tecla/server/pkg/gui"
 )
@@ -77,6 +81,8 @@ func (a *App) guiBoundFuncs() []*gui.BoundFunc {
 
 	bfs = append(bfs, a.configValidatorMethods()...)
 	bfs = append(bfs, a.organizerMethods()...)
+	bfs = append(bfs, a.appInfoFunc())
+	bfs = append(bfs, a.appCreditsFunc())
 
 	return bfs
 }
@@ -116,6 +122,20 @@ func extractAPIMethodNames(api reflect.Type) []string {
 		names = append(names, api.Method(i).Name)
 	}
 	return names
+}
+
+func (a *App) appInfoFunc() *gui.BoundFunc {
+	return &gui.BoundFunc{
+		Name: "appInfo",
+		Func: info.AppInfo,
+	}
+}
+
+func (a *App) appCreditsFunc() *gui.BoundFunc {
+	return &gui.BoundFunc{
+		Name: "appCredits",
+		Func: credits.AppCredits,
+	}
 }
 
 func (a *App) close() error {
