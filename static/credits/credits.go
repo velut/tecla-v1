@@ -3,12 +3,9 @@ package credits
 import (
 	"encoding/json"
 	"fmt"
-	"net/http"
 	"sort"
 	"strings"
 	"sync"
-
-	"github.com/rakyll/statik/fs"
 )
 
 // Credits contains information about the software included in the application.
@@ -38,17 +35,12 @@ func AppCredits() *Credits {
 }
 
 func setLibraries() {
-	assets, err := fs.New()
+	clientLibraries, err := readClientLibraries()
 	if err != nil {
 		return
 	}
 
-	clientLibraries, err := readClientLibraries(assets)
-	if err != nil {
-		return
-	}
-
-	serverLibraries, err := readServerLibraries(assets)
+	serverLibraries, err := readServerLibraries()
 	if err != nil {
 		return
 	}
@@ -61,32 +53,25 @@ func setLibraries() {
 	libraries = allLibraries
 }
 
-func readClientLibraries(assets http.FileSystem) ([]*Library, error) {
-	return readLibraries(assets, "client")
+func readClientLibraries() ([]*Library, error) {
+	return readLibraries("client")
 }
 
-func readServerLibraries(assets http.FileSystem) ([]*Library, error) {
-	return readLibraries(assets, "server")
+func readServerLibraries() ([]*Library, error) {
+	return readLibraries("server")
 }
 
-func readLibraries(assets http.FileSystem, dir string) ([]*Library, error) {
-	creditsData, err := fs.ReadFile(assets, fmt.Sprintf("/%s/credits.json", dir))
-	if err != nil {
-		return nil, err
-	}
+func readLibraries(dir string) ([]*Library, error) {
+	creditsData := _escFSMustByte(false, fmt.Sprintf("/%s/credits.json", dir))
 
 	credits := &Credits{}
-	err = json.Unmarshal(creditsData, credits)
+	err := json.Unmarshal(creditsData, credits)
 	if err != nil {
 		return nil, err
 	}
 
 	for _, lib := range credits.Credits {
-		license, err := fs.ReadFile(assets, fmt.Sprintf("/%s/%s/LICENSE", dir, libDir(lib.Name)))
-		if err != nil {
-			return nil, err
-		}
-		lib.License = string(license)
+		lib.License = _escFSMustString(false, fmt.Sprintf("/%v/%v/LICENSE", dir, libDir(lib.Name)))
 	}
 
 	return credits.Credits, nil

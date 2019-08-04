@@ -2,8 +2,6 @@ package info
 
 import (
 	"sync"
-
-	"github.com/rakyll/statik/fs"
 )
 
 // App info
@@ -52,15 +50,5 @@ func AppInfo() *Info {
 }
 
 func setLicense() {
-	assets, err := fs.New()
-	if err != nil {
-		return
-	}
-
-	l, err := fs.ReadFile(assets, "/LICENSE")
-	if err != nil {
-		return
-	}
-
-	license = string(l)
+	license = _escFSMustString(false, "/LICENSE")
 }

@@ -30,4 +30,5 @@ func TestAppInfo(t *testing.T) {
 
 	assert.Equal(want, got, testName)
 	assert.NotEqual(noLicense, got.License, testName)
+	assert.NotEmpty(got.License, testName)
 }
