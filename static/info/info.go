@@ -13,7 +13,7 @@ var (
 	homepage    = "https://github.com/velut/tecla"
 	repository  = "https://github.com/velut/tecla"
 	version     = "version not set" // Set by ldflags
-	commit      = "version not set" // Set by ldflags
+	commit      = "commit not set"  // Set by ldflags
 	copyright   = "Copyright (c) 2019 Edoardo Scibona"
 	noWarranty  = "This program comes with ABSOLUTELY NO WARRANTY"
 	license     = "license not set" // Read from static filesystem
