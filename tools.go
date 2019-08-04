@@ -4,5 +4,5 @@ package tools
 
 import (
 	_ "github.com/mjibson/esc"
-	_ "github.com/rakyll/statik/fs"
+	_ "github.com/rakyll/statik"
 )
