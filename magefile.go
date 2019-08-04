@@ -33,6 +33,7 @@ var (
 // Tools
 var (
 	statik = sh.RunCmd("statik")
+	esc    = sh.RunCmd("esc")
 )
 
 // Project directories
@@ -291,18 +292,34 @@ func (Static) Generate() {
 }
 
 func (Static) generateInfo() error {
-	fmt.Println("Generating static info package...")
-	return statik("-src=./static/info/license", "-dest=./static", "-p=info")
+	fmt.Println("Generating static data for info package...")
+	return esc(
+		"-o=./static/info/static.go",
+		"-pkg=info",
+		"-prefix=static/info/license",
+		"-private",
+		"./static/info/license",
+	)
 }
 
 func (Static) generateCredits() error {
-	fmt.Println("Generating static credits package...")
-	return statik("-src=./static/credits/licenses", "-dest=./static", "-p=credits")
+	fmt.Println("Generating static data for credits package...")
+	return esc(
+		"-o=./static/credits/static.go",
+		"-pkg=credits",
+		"-prefix=static/credits/licenses",
+		"-private",
+		"./static/credits/licenses",
+	)
 }
 
 func (Static) generateClient() error {
 	fmt.Println("Generating static client package...")
-	return statik("-src=./client/dist", "-dest=./static", "-p=client")
+	return statik(
+		"-src=./client/dist",
+		"-dest=./static",
+		"-p=client",
+	)
 }
 
 func (Static) chdir() error {
@@ -320,13 +337,19 @@ type Tools mg.Namespace
 // Installs all build tools.
 func (Tools) Install() {
 	fmt.Println("Installing build tools...")
-	mg.Deps(Tools.installStatik)
+	mg.SerialDeps(Tools.installStatik, Tools.installEsc)
 }
 
 // Installs the statik binary.
 func (Tools) installStatik() error {
 	fmt.Println("Installing statik...")
 	return goGet("github.com/rakyll/statik")
+}
+
+// Installs the esc binary.
+func (Tools) installEsc() error {
+	fmt.Println("Installing esc...")
+	return goGet("github.com/mjibson/esc")
 }
 
 // Clean namespace
@@ -356,8 +379,8 @@ func (Clean) client() error {
 func (Clean) static() error {
 	as := []string{
 		filepath.Join(staticDir, "client", "statik.go"),
-		filepath.Join(staticDir, "info", "statik.go"),
-		filepath.Join(staticDir, "credits", "statik.go"),
+		filepath.Join(staticDir, "info", "static.go"),
+		filepath.Join(staticDir, "credits", "static.go"),
 	}
 
 	fmt.Println("Removing static artifacts...")

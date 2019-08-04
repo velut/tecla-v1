@@ -22,6 +22,6 @@ client/node_modules/
 client/dist/
 
 # Static packages
-static/info/statik.go
-static/credits/statik.go
+static/info/static.go
+static/credits/static.go
 static/client/statik.go
