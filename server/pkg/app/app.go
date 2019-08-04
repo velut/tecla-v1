@@ -4,12 +4,10 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/velut/tecla/static/credits"
-
-	"github.com/velut/tecla/static/info"
-
 	"github.com/velut/tecla/server/pkg/core"
 	"github.com/velut/tecla/server/pkg/gui"
+	"github.com/velut/tecla/static/credits"
+	"github.com/velut/tecla/static/info"
 )
 
 // App represents the main application.
