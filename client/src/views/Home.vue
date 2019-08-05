@@ -43,7 +43,6 @@ import { Component, Vue } from 'vue-property-decorator';
 
 import { Info } from '@/api/info';
 import { appInfoAPI } from '@/api/api';
-import appInfo from '@/info';
 
 @Component
 export default class Home extends Vue {
