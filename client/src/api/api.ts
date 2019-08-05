@@ -1,10 +1,11 @@
 import { Config } from '@/api/config';
 import { OrganizerStatus } from '@/api/organizer';
+import { Info, Credits } from '@/api/info';
 
 /**
  * API represents the API for the server.
  */
-export interface API extends ConfigValidatorAPI, OrganizerAPI {}
+export interface API extends ConfigValidatorAPI, OrganizerAPI, AppInfoAPI {}
 
 /**
  * ConfigValidatorAPI represents the API for the validation of configurations.
@@ -53,6 +54,22 @@ export interface OrganizerAPI {
     handleHotkey: (hotkey: string) => Promise<OrganizerStatus>;
 }
 
+/**
+ * AppInfoAPI represents the API for retrieving information about the application.
+ */
+export interface AppInfoAPI {
+    /**
+     * appInfo returns information about the application.
+     */
+    appInfo: () => Promise<Info>;
+
+    /**
+     * appCredits returns information about the libraries included in the application.
+     */
+    appCredits: () => Promise<Credits>;
+}
+
 export const api = (window as unknown) as API;
 export const configValidatorAPI = (window as unknown) as ConfigValidatorAPI;
 export const organizerAPI = (window as unknown) as OrganizerAPI;
+export const appInfoAPI = (window as unknown) as AppInfoAPI;
