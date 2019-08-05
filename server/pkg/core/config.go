@@ -18,7 +18,7 @@ type ConfigSrc struct {
 
 // ConfigDst contains the configuration options for the destination directories.
 type ConfigDst struct {
-	Dirs []DstDir `json:"dirs"`
+	Dirs []*DstDir `json:"dirs"`
 }
 
 // DstDir represents a destination directory.

@@ -502,7 +502,7 @@ func emptyConfig() *Config {
 			DefaultOpType:  OpTypeCopy,
 		},
 		Dst: &ConfigDst{
-			Dirs: []DstDir{},
+			Dirs: []*DstDir{},
 		},
 		Ops: &ConfigOps{
 			NumWorkers: 0,
@@ -521,7 +521,7 @@ func configWithSrcDir(dir string) *Config {
 			DefaultOpType:  OpTypeCopy,
 		},
 		Dst: &ConfigDst{
-			Dirs: []DstDir{},
+			Dirs: []*DstDir{},
 		},
 		Ops: &ConfigOps{
 			NumWorkers: 0,
@@ -540,7 +540,7 @@ func configWithSrcDirAndDstDir(srcDir, dstDir string) *Config {
 			DefaultOpType:  OpTypeCopy,
 		},
 		Dst: &ConfigDst{
-			Dirs: []DstDir{
+			Dirs: []*DstDir{
 				{
 					Hotkey: "x",
 					Dir:    dstDir,
@@ -564,7 +564,7 @@ func configWithSrcDirAndDstDirMove(srcDir, dstDir string) *Config {
 			DefaultOpType:  OpTypeMove,
 		},
 		Dst: &ConfigDst{
-			Dirs: []DstDir{
+			Dirs: []*DstDir{
 				{
 					Hotkey: "x",
 					Dir:    dstDir,
@@ -588,7 +588,7 @@ func configWithSrcDirAndSubDirs(dir string) *Config {
 			DefaultOpType:  OpTypeCopy,
 		},
 		Dst: &ConfigDst{
-			Dirs: []DstDir{},
+			Dirs: []*DstDir{},
 		},
 		Ops: &ConfigOps{
 			NumWorkers: 0,

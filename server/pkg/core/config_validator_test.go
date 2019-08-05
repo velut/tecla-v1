@@ -187,7 +187,7 @@ func TestDefaultConfigValidator_Validate(t *testing.T) {
 					DefaultOpType: OpTypeCopy,
 				},
 				Dst: &ConfigDst{
-					Dirs: []DstDir{},
+					Dirs: []*DstDir{},
 				},
 				Ops: &ConfigOps{},
 			},
@@ -202,7 +202,7 @@ func TestDefaultConfigValidator_Validate(t *testing.T) {
 					DefaultOpType: OpTypeCopy,
 				},
 				Dst: &ConfigDst{
-					Dirs: []DstDir{
+					Dirs: []*DstDir{
 						{"", ""},
 					},
 				},
@@ -219,7 +219,7 @@ func TestDefaultConfigValidator_Validate(t *testing.T) {
 					DefaultOpType: OpTypeCopy,
 				},
 				Dst: &ConfigDst{
-					Dirs: []DstDir{
+					Dirs: []*DstDir{
 						{"tooLongHotkey", ""},
 					},
 				},
@@ -236,7 +236,7 @@ func TestDefaultConfigValidator_Validate(t *testing.T) {
 					DefaultOpType: OpTypeCopy,
 				},
 				Dst: &ConfigDst{
-					Dirs: []DstDir{
+					Dirs: []*DstDir{
 						{"a", ""},
 					},
 				},
@@ -253,7 +253,7 @@ func TestDefaultConfigValidator_Validate(t *testing.T) {
 					DefaultOpType: OpTypeCopy,
 				},
 				Dst: &ConfigDst{
-					Dirs: []DstDir{
+					Dirs: []*DstDir{
 						{"a", "invalid"},
 					},
 				},
@@ -270,7 +270,7 @@ func TestDefaultConfigValidator_Validate(t *testing.T) {
 					DefaultOpType: OpTypeCopy,
 				},
 				Dst: &ConfigDst{
-					Dirs: []DstDir{
+					Dirs: []*DstDir{
 						{"a", dir1File1.Name()},
 					},
 				},
@@ -287,7 +287,7 @@ func TestDefaultConfigValidator_Validate(t *testing.T) {
 					DefaultOpType: OpTypeCopy,
 				},
 				Dst: &ConfigDst{
-					Dirs: []DstDir{
+					Dirs: []*DstDir{
 						{"a", dir1},
 					},
 				},
@@ -304,7 +304,7 @@ func TestDefaultConfigValidator_Validate(t *testing.T) {
 					DefaultOpType: OpTypeCopy,
 				},
 				Dst: &ConfigDst{
-					Dirs: []DstDir{
+					Dirs: []*DstDir{
 						{"a", dir1Subdir},
 					},
 				},
@@ -321,7 +321,7 @@ func TestDefaultConfigValidator_Validate(t *testing.T) {
 					DefaultOpType: OpTypeCopy,
 				},
 				Dst: &ConfigDst{
-					Dirs: []DstDir{
+					Dirs: []*DstDir{
 						{"a", dir2},
 					},
 				},
@@ -340,7 +340,7 @@ func TestDefaultConfigValidator_Validate(t *testing.T) {
 					DefaultOpType: OpTypeCopy,
 				},
 				Dst: &ConfigDst{
-					Dirs: []DstDir{
+					Dirs: []*DstDir{
 						{"a", dir2},
 					},
 				},
@@ -359,7 +359,7 @@ func TestDefaultConfigValidator_Validate(t *testing.T) {
 					DefaultOpType: OpTypeCopy,
 				},
 				Dst: &ConfigDst{
-					Dirs: []DstDir{
+					Dirs: []*DstDir{
 						{"a", dir2},
 					},
 				},
@@ -378,7 +378,7 @@ func TestDefaultConfigValidator_Validate(t *testing.T) {
 					DefaultOpType: OpTypeCopy,
 				},
 				Dst: &ConfigDst{
-					Dirs: []DstDir{
+					Dirs: []*DstDir{
 						{"a", dir2},
 					},
 				},
@@ -397,7 +397,7 @@ func TestDefaultConfigValidator_Validate(t *testing.T) {
 					DefaultOpType: OpTypeCopy,
 				},
 				Dst: &ConfigDst{
-					Dirs: []DstDir{
+					Dirs: []*DstDir{
 						{"a", dir2},
 					},
 				},
@@ -417,7 +417,7 @@ func TestDefaultConfigValidator_Validate(t *testing.T) {
 					DefaultOpType: OpTypeCopy,
 				},
 				Dst: &ConfigDst{
-					Dirs: []DstDir{
+					Dirs: []*DstDir{
 						{"a", dir2},
 					},
 				},
@@ -437,7 +437,7 @@ func TestDefaultConfigValidator_Validate(t *testing.T) {
 					DefaultOpType: OpTypeCopy,
 				},
 				Dst: &ConfigDst{
-					Dirs: []DstDir{
+					Dirs: []*DstDir{
 						{"a", dir2},
 					},
 				},
@@ -457,7 +457,7 @@ func TestDefaultConfigValidator_Validate(t *testing.T) {
 					DefaultOpType: OpTypeCopy,
 				},
 				Dst: &ConfigDst{
-					Dirs: []DstDir{
+					Dirs: []*DstDir{
 						{"a", dir2},
 					},
 				},
@@ -477,7 +477,7 @@ func TestDefaultConfigValidator_Validate(t *testing.T) {
 					DefaultOpType: OpTypeCopy,
 				},
 				Dst: &ConfigDst{
-					Dirs: []DstDir{
+					Dirs: []*DstDir{
 						{"a", dir2},
 					},
 				},
@@ -497,7 +497,7 @@ func TestDefaultConfigValidator_Validate(t *testing.T) {
 					DefaultOpType: OpTypeMove,
 				},
 				Dst: &ConfigDst{
-					Dirs: []DstDir{
+					Dirs: []*DstDir{
 						{"a", dir2},
 					},
 				},
@@ -517,7 +517,7 @@ func TestDefaultConfigValidator_Validate(t *testing.T) {
 					DefaultOpType: OpTypeMove,
 				},
 				Dst: &ConfigDst{
-					Dirs: []DstDir{
+					Dirs: []*DstDir{
 						{"a", dir2},
 						{"b", dir2},
 					},
@@ -539,7 +539,7 @@ func TestDefaultConfigValidator_Validate(t *testing.T) {
 					IncludeSubdirs: true,
 				},
 				Dst: &ConfigDst{
-					Dirs: []DstDir{
+					Dirs: []*DstDir{
 						{"a", dir2},
 						{"b", dir2},
 					},
@@ -561,7 +561,7 @@ func TestDefaultConfigValidator_Validate(t *testing.T) {
 					IncludeSubdirs: true,
 				},
 				Dst: &ConfigDst{
-					Dirs: []DstDir{
+					Dirs: []*DstDir{
 						{"0", dir2},
 						{"1", dir2},
 						{"a", dir2},
@@ -593,7 +593,7 @@ func TestDefaultConfigValidator_Validate(t *testing.T) {
 					IncludeSubdirs: true,
 				},
 				Dst: &ConfigDst{
-					Dirs: []DstDir{
+					Dirs: []*DstDir{
 						{"0", dir2},
 						{"1", dir2},
 						{"a", dir2},
