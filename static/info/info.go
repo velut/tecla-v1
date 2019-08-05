@@ -4,17 +4,24 @@ import (
 	"sync"
 )
 
+// Placeholders
+const (
+	noVersion = "version not set"
+	noCommit  = "commit not set"
+	noLicense = "license not set"
+)
+
 // App info
 var (
 	name        = "Tecla"
 	description = "The interactive file organizer"
 	homepage    = "https://github.com/velut/tecla"
 	repository  = "https://github.com/velut/tecla"
-	version     = "version not set" // Set by ldflags
-	commit      = "commit not set"  // Set by ldflags
+	version     = noVersion // Set in gitInfo.go
+	commit      = noCommit  // Set in gitInfo.go
 	copyright   = "Copyright (c) 2019 Edoardo Scibona"
-	noWarranty  = "This program comes with ABSOLUTELY NO WARRANTY"
-	license     = "license not set" // Read from static filesystem
+	warranty    = "This program comes with ABSOLUTELY NO WARRANTY"
+	license     = noLicense // Read from static filesystem
 )
 
 // Info lists information about the application.
@@ -26,7 +33,7 @@ type Info struct {
 	Version     string `json:"version"`
 	Commit      string `json:"commit"`
 	Copyright   string `json:"copyright"`
-	NoWarranty  string `json:"noWarranty"`
+	Warranty    string `json:"warranty"`
 	License     string `json:"license"`
 }
 
@@ -44,7 +51,7 @@ func AppInfo() *Info {
 		Version:     version,
 		Commit:      commit,
 		Copyright:   copyright,
-		NoWarranty:  noWarranty,
+		Warranty:    warranty,
 		License:     license,
 	}
 }

@@ -10,10 +10,6 @@ func TestAppInfo(t *testing.T) {
 	assert := assert.New(t)
 	testName := "TestAppInfo"
 
-	noVersion := version
-	noCommit := commit
-	noLicense := license
-
 	got := AppInfo()
 
 	want := &Info{
@@ -21,14 +17,16 @@ func TestAppInfo(t *testing.T) {
 		Description: description,
 		Homepage:    homepage,
 		Repository:  repository,
-		Version:     noVersion, // Set by ldflags
-		Commit:      noCommit,  // Set by ldflags
+		Version:     version,
+		Commit:      commit,
 		Copyright:   copyright,
-		NoWarranty:  noWarranty,
+		Warranty:    warranty,
 		License:     license,
 	}
 
 	assert.Equal(want, got, testName)
+	assert.NotEqual(noVersion, got.Version, testName)
+	assert.NotEqual(noCommit, got.Commit, testName)
 	assert.NotEqual(noLicense, got.License, testName)
 	assert.NotEmpty(got.License, testName)
 }
