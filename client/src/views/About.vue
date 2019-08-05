@@ -1,14 +1,18 @@
 <template>
     <v-container fluid>
         <div class="display-1">About Tecla</div>
-        <v-container>
+        <v-container v-if="info && credits">
             <div class="subheading">
                 <p>
                     {{ info.name }}
                     <br />
                     {{ info.description }}
                 </p>
-                <p>Version: {{ info.version }}</p>
+                <p>
+                    Version: {{ info.version }}
+                    <br />
+                    Commit: {{ info.commit }}
+                </p>
                 <p>
                     Homepage:
                     <a
@@ -47,7 +51,7 @@
                 </p>
                 <v-expansion-panel>
                     <v-expansion-panel-content
-                        v-for="credit in credits"
+                        v-for="credit in credits.credits"
                         :key="credit.name"
                         lazy
                     >
@@ -88,13 +92,17 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 
-import info from '@/info';
-import credits from '@/credits';
+import { Info, Credits } from '@/api/info';
+import { appInfoAPI } from '@/api/api';
 
 @Component
 export default class About extends Vue {
-    private info = info;
+    private info: Info | null = null;
+    private credits: Credits | null = null;
 
-    private credits = credits;
+    public beforeCreate() {
+        appInfoAPI.appInfo().then((res) => (this.info = res));
+        appInfoAPI.appCredits().then((res) => (this.credits = res));
+    }
 }
 </script>

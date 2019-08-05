@@ -1,7 +1,7 @@
 <template>
     <v-container fluid>
         <div class="display-1">Home</div>
-        <v-container>
+        <v-container v-if="info">
             <v-container pt-0>
                 <v-alert :value="true" type="warning" outline>
                     <div class="subheading">
@@ -41,10 +41,16 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 
-import info from '@/info';
+import { Info } from '@/api/info';
+import { appInfoAPI } from '@/api/api';
+import appInfo from '@/info';
 
 @Component
 export default class Home extends Vue {
-    private info = info;
+    private info: Info | null = null;
+
+    public beforeCreate() {
+        appInfoAPI.appInfo().then((res) => (this.info = res));
+    }
 }
 </script>
