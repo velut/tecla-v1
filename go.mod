@@ -9,7 +9,7 @@ require (
 	github.com/pkg/errors v0.8.1 // indirect
 	github.com/rakyll/statik v0.1.6
 	github.com/stretchr/testify v1.3.0
-	github.com/velut/fsutils-go v0.1.3
+	github.com/velut/fsutils-go v0.1.4
 	github.com/zserge/lorca v0.1.8
 	golang.org/x/tools v0.0.0-20190802220118-1d1727260058 // indirect
 )
