@@ -175,6 +175,10 @@ import { configValidatorAPI } from '@/api/api';
 import { capitalize } from '@/utils/utils';
 import { organizer } from '@/store/modules/organizer';
 
+const defaultConfigName = 'anonymous config';
+const defaultNumWorkers = 1;
+const defaultMaxTries = 10000;
+
 @Component
 export default class ConfigForm extends Vue {
     @organizer.Action
@@ -196,8 +200,8 @@ export default class ConfigForm extends Vue {
             dirs: [{ hotkey: '', dir: '' }],
         },
         ops: {
-            numWorkers: 1,
-            maxTries: 10000,
+            numWorkers: defaultNumWorkers,
+            maxTries: defaultMaxTries,
         },
     };
 
@@ -223,6 +227,12 @@ export default class ConfigForm extends Vue {
 
     public async submit() {
         this.isSubmitting = true;
+
+        // Substitute possibly wrong values.
+        this.config.name = this.config.name || defaultConfigName;
+        this.config.ops.numWorkers =
+            this.config.ops.numWorkers || defaultNumWorkers;
+        this.config.ops.maxTries = this.config.ops.maxTries || defaultMaxTries;
 
         const [err, _] = await to<void, string>(
             configValidatorAPI.validateConfig(this.config),
