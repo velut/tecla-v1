@@ -3,6 +3,7 @@ module github.com/velut/tecla
 go 1.12
 
 require (
+	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/gammazero/workerpool v0.0.0-20190608213748-0ed5e40ec55e
 	github.com/magefile/mage v1.8.0
 	github.com/mjibson/esc v0.2.0
@@ -11,5 +12,6 @@ require (
 	github.com/stretchr/testify v1.3.0
 	github.com/velut/fsutils-go v0.1.4
 	github.com/zserge/lorca v0.1.8
-	golang.org/x/tools v0.0.0-20190802220118-1d1727260058 // indirect
+	golang.org/x/net v0.0.0-20190724013045-ca1201d0de80 // indirect
+	golang.org/x/tools v0.0.0-20190809145639-6d4652c779c4 // indirect
 )
