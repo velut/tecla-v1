@@ -70,6 +70,10 @@ func (g *GUI) start() error {
 		return err
 	}
 
+	if err := g.bindGUIFuncs(); err != nil {
+		return err
+	}
+
 	if err := g.loadClient(); err != nil {
 		return err
 	}
@@ -121,6 +125,21 @@ func (g *GUI) chromeArgs() []string {
 
 func (g *GUI) bindFuncs() error {
 	funcs := g.options.BoundFuncs
+	for _, f := range funcs {
+		if err := g.ui.Bind(f.Name, f.Func); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (g *GUI) bindGUIFuncs() error {
+	funcs := []BoundFunc{
+		{
+			Name: "selectDirectory",
+			Func: SelectDirectory,
+		},
+	}
 	for _, f := range funcs {
 		if err := g.ui.Bind(f.Name, f.Func); err != nil {
 			return err

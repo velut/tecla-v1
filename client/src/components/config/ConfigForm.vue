@@ -20,7 +20,7 @@
 
             <div class="title">Source directory</div>
             <v-container>
-                <v-layout>
+                <v-layout align-center>
                     <v-flex xs11>
                         <v-text-field
                             v-model="config.src.dir"
@@ -32,6 +32,23 @@
                             :error-messages="srcDirError"
                             :disabled="isSubmitting"
                         ></v-text-field>
+                    </v-flex>
+                    <v-flex xs>
+                        <v-tooltip bottom>
+                            <template v-slot:activator="{ on }">
+                                <v-btn
+                                    type="button"
+                                    icon
+                                    color="info"
+                                    v-on="on"
+                                    @click="selectSrcDir"
+                                    :disabled="isSubmitting"
+                                >
+                                    <v-icon medium>folder_open</v-icon>
+                                </v-btn>
+                            </template>
+                            <span>Browse directories</span>
+                        </v-tooltip>
                     </v-flex>
                 </v-layout>
                 <v-layout>
@@ -74,7 +91,11 @@
                             :disabled="isSubmitting"
                         ></v-text-field>
                     </v-flex>
-                    <v-flex xs9>
+                    <v-flex
+                        v-bind="{
+                            [`xs${config.dst.dirs.length == 1 ? 9 : 8}`]: true,
+                        }"
+                    >
                         <v-text-field
                             :key="`config.dst.dirs.${index}.dir`"
                             v-model="dstDir.dir"
@@ -87,17 +108,35 @@
                             :disabled="isSubmitting"
                         ></v-text-field>
                     </v-flex>
+                    <v-flex xs>
+                        <v-tooltip bottom>
+                            <template v-slot:activator="{ on }">
+                                <v-btn
+                                    type="button"
+                                    icon
+                                    color="info"
+                                    v-on="on"
+                                    @click="selectDstDir(index)"
+                                    :disabled="isSubmitting"
+                                >
+                                    <v-icon medium>folder_open</v-icon>
+                                </v-btn>
+                            </template>
+                            <span>Browse directories</span>
+                        </v-tooltip>
+                    </v-flex>
                     <v-flex xs v-if="config.dst.dirs.length > 1">
                         <v-tooltip bottom>
                             <template v-slot:activator="{ on }">
                                 <v-btn
                                     type="button"
                                     icon
+                                    color="error"
                                     v-on="on"
                                     @click="removeDstDir(index)"
                                     :disabled="isSubmitting"
                                 >
-                                    <v-icon>delete</v-icon>
+                                    <v-icon medium>delete</v-icon>
                                 </v-btn>
                             </template>
                             <span>Remove</span>
@@ -171,7 +210,7 @@ import to from 'await-to-js';
 
 import { Config, ConfigValidationError } from '@/api/config';
 import { OpType } from '@/api/operation';
-import { configValidatorAPI } from '@/api/api';
+import { configValidatorAPI, dialogAPI } from '@/api/api';
 import { capitalize } from '@/utils/utils';
 import { organizer } from '@/store/modules/organizer';
 
@@ -215,6 +254,20 @@ export default class ConfigForm extends Vue {
             value: OpType.Move,
         },
     ];
+
+    public async selectSrcDir() {
+        const [_, dir] = await to<string, string>(dialogAPI.selectDirectory());
+        if (dir) {
+            this.config.src.dir = dir;
+        }
+    }
+
+    public async selectDstDir(index: number) {
+        const [_, dir] = await to<string, string>(dialogAPI.selectDirectory());
+        if (dir) {
+            this.config.dst.dirs[index].dir = dir;
+        }
+    }
 
     public addDstDir() {
         this.config.dst.dirs.push({ hotkey: '', dir: '' });

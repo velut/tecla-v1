@@ -5,6 +5,7 @@ go 1.12
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/gammazero/workerpool v0.0.0-20190608213748-0ed5e40ec55e
+	github.com/gen2brain/dlgs v0.0.0-20190708095831-3854608588f7
 	github.com/magefile/mage v1.8.0
 	github.com/mjibson/esc v0.2.0
 	github.com/pkg/errors v0.8.1 // indirect

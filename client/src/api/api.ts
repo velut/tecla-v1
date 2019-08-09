@@ -5,7 +5,11 @@ import { Info, Credits } from '@/api/info';
 /**
  * API represents the API for the server.
  */
-export interface API extends ConfigValidatorAPI, OrganizerAPI, AppInfoAPI {}
+export interface API
+    extends ConfigValidatorAPI,
+        OrganizerAPI,
+        AppInfoAPI,
+        DialogAPI {}
 
 /**
  * ConfigValidatorAPI represents the API for the validation of configurations.
@@ -69,7 +73,19 @@ export interface AppInfoAPI {
     appCredits: () => Promise<Credits>;
 }
 
+/**
+ * DialogAPI represents the API for interacting with dialogs.
+ */
+export interface DialogAPI {
+    /**
+     * selectDirectory opens a directory selection dialog
+     * and returns the path of the selected directory.
+     */
+    selectDirectory: () => Promise<string>;
+}
+
 export const api = (window as unknown) as API;
 export const configValidatorAPI = (window as unknown) as ConfigValidatorAPI;
 export const organizerAPI = (window as unknown) as OrganizerAPI;
 export const appInfoAPI = (window as unknown) as AppInfoAPI;
+export const dialogAPI = (window as unknown) as DialogAPI;
