@@ -16,3 +16,6 @@ require (
 	golang.org/x/net v0.0.0-20190724013045-ca1201d0de80 // indirect
 	golang.org/x/tools v0.0.0-20190809145639-6d4652c779c4 // indirect
 )
+
+// See https://github.com/velut/dlgs/tree/add-window-owner
+replace github.com/gen2brain/dlgs => github.com/velut/dlgs v0.0.0-20190810153543-5240659e20bc

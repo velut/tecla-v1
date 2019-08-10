@@ -7,6 +7,8 @@ import (
 	"github.com/gen2brain/dlgs"
 )
 
+const windowName = "Tecla - The interactive file organizer"
+
 var (
 	selectDirectoryLock uint32
 )
@@ -20,7 +22,7 @@ func SelectDirectory() (string, error) {
 	}
 	defer atomic.StoreUint32(&selectDirectoryLock, 0)
 
-	dir, ok, err := dlgs.File("Select directory", "", true)
+	dir, ok, err := dlgs.File("Select a directory", "", windowName, true)
 	if err != nil {
 		return "", err
 	}
