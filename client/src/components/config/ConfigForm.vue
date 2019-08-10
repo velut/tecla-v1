@@ -214,7 +214,7 @@ import { configValidatorAPI, dialogAPI } from '@/api/api';
 import { capitalize } from '@/utils/utils';
 import { organizer } from '@/store/modules/organizer';
 
-const defaultConfigName = 'anonymous config';
+const defaultConfigName = 'Anonymous configuration';
 const defaultNumWorkers = 1;
 const defaultMaxTries = 10000;
 
