@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-const numCredits = 20
+const numCredits = 21
 
 func TestAppCredits(t *testing.T) {
 	assert := assert.New(t)
