@@ -221,6 +221,9 @@ const defaultMaxTries = 10000;
 @Component
 export default class ConfigForm extends Vue {
     @organizer.Action
+    public restoreConfig!: () => Promise<Config>;
+
+    @organizer.Action
     public loadConfig!: (config: Config) => Promise<void>;
 
     public isSubmitting: boolean = false;
@@ -254,6 +257,10 @@ export default class ConfigForm extends Vue {
             value: OpType.Move,
         },
     ];
+
+    public mounted() {
+        this.restoreConfig().then((cfg) => (this.config = cfg));
+    }
 
     public async selectSrcDir() {
         const [_, dir] = await to<string, string>(dialogAPI.selectDirectory());

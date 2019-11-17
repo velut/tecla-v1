@@ -1,6 +1,6 @@
 import { Config } from '@/api/config';
+import { Credits, Info } from '@/api/info';
 import { OrganizerStatus } from '@/api/organizer';
-import { Info, Credits } from '@/api/info';
 
 /**
  * API represents the API for the server.
@@ -26,6 +26,11 @@ export interface ConfigValidatorAPI {
  * OrganizerAPI represents the API for the organizer.
  */
 export interface OrganizerAPI {
+    /**
+     * restoreConfig TODO:
+     */
+    restoreConfig: () => Promise<Config>;
+
     /**
      * loadConfig loads the given configuration, which must be valid, starting the organizer.
      */

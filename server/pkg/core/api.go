@@ -15,6 +15,9 @@ type ConfigValidatorAPI interface {
 
 // OrganizerAPI represents the API for the organizer.
 type OrganizerAPI interface {
+	// RestoreConfig TODO:
+	RestoreConfig() (*Config, error)
+
 	// LoadConfig loads the given configuration, which must be valid, starting the organizer.
 	LoadConfig(config *Config) (*OrganizerStatus, error)
 

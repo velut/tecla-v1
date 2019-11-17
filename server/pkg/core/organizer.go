@@ -1,8 +1,11 @@
 package core
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
+	"io/ioutil"
+	"os"
 	"path/filepath"
 	"sync"
 	"time"
@@ -47,6 +50,21 @@ func newOrganizer() *organizer {
 	return &organizer{}
 }
 
+// RestoreConfig TODO:
+func (o *Organizer) RestoreConfig() (*Config, error) {
+	o.mutex.Lock()
+	defer o.mutex.Unlock()
+
+	// Get latest config
+	ucDir, _ := os.UserConfigDir()
+	teclaDir := filepath.Join(ucDir, "tecla")
+	latestFile := filepath.Join(teclaDir, "tecla-latest-config.json")
+	configJSON, _ := ioutil.ReadFile(latestFile)
+	config := &Config{}
+	err := json.Unmarshal(configJSON, config)
+	return config, err
+}
+
 // LoadConfig loads the given configuration, which must be valid, starting the organizer.
 func (o *Organizer) LoadConfig(config *Config) (*OrganizerStatus, error) {
 	o.mutex.Lock()
@@ -57,6 +75,15 @@ func (o *Organizer) LoadConfig(config *Config) (*OrganizerStatus, error) {
 		o.dropConfig()
 		return nil, err
 	}
+
+	// Save as latest config
+	configJSON, _ := json.Marshal(config)
+	ucDir, _ := os.UserConfigDir()
+	teclaDir := filepath.Join(ucDir, "tecla")
+	_ = os.MkdirAll(teclaDir, 0700)
+	latestFile := filepath.Join(teclaDir, "tecla-latest-config.json")
+	_ = ioutil.WriteFile(latestFile, configJSON, 0644)
+	//
 
 	return o.organizerStatus()
 }

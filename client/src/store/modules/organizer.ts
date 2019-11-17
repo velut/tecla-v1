@@ -1,11 +1,10 @@
-import { Module, VuexModule, Mutation, Action } from 'vuex-module-decorators';
-import { namespace } from 'vuex-class';
-import to from 'await-to-js';
-
+import { organizerAPI } from '@/api/api';
 import { Config, DstDir } from '@/api/config';
 import { File } from '@/api/file';
-import { organizerAPI } from '@/api/api';
 import { OrganizerStatus } from '@/api/organizer';
+import to from 'await-to-js';
+import { namespace } from 'vuex-class';
+import { Action, Module, Mutation, VuexModule } from 'vuex-module-decorators';
 
 export const organizer = namespace('organizer');
 
@@ -52,6 +51,26 @@ export default class Organizer extends VuexModule {
      */
     public get dstDirs(): DstDir[] {
         return this.config!.dst.dirs;
+    }
+
+    @Action({ commit: 'setConfig' })
+    public async restoreConfig() {
+        const [err, config] = await to<Config, string>(
+            organizerAPI.restoreConfig(),
+        );
+        if (err) {
+            console.error(err);
+            return null;
+        }
+
+        return config;
+    }
+
+    @Mutation
+    private setConfig(config: Config | null) {
+        if (config) {
+            this.config = config;
+        }
     }
 
     @Action({ commit: 'setStatus' })
