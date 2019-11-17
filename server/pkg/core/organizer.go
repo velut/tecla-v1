@@ -56,13 +56,24 @@ func (o *Organizer) RestoreConfig() (*Config, error) {
 	defer o.mutex.Unlock()
 
 	// Get latest config
-	ucDir, _ := os.UserConfigDir()
+	ucDir, err := os.UserConfigDir()
+	if err != nil {
+		return nil, err
+	}
+
 	teclaDir := filepath.Join(ucDir, "tecla")
 	latestFile := filepath.Join(teclaDir, "tecla-latest-config.json")
-	configJSON, _ := ioutil.ReadFile(latestFile)
+	configJSON, err := ioutil.ReadFile(latestFile)
+	if err != nil {
+		return nil, err
+	}
 	config := &Config{}
-	err := json.Unmarshal(configJSON, config)
-	return config, err
+	err = json.Unmarshal(configJSON, config)
+	if err != nil {
+		return nil, err
+	}
+
+	return config, nil
 }
 
 // LoadConfig loads the given configuration, which must be valid, starting the organizer.

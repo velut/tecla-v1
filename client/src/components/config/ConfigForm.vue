@@ -259,7 +259,13 @@ export default class ConfigForm extends Vue {
     ];
 
     public mounted() {
-        this.restoreConfig().then((cfg) => (this.config = cfg));
+        this.restoreConfig()
+            .then((cfg) => {
+                if (cfg) {
+                    this.config = cfg;
+                }
+            })
+            .catch();
     }
 
     public async selectSrcDir() {
