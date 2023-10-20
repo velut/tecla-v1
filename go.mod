@@ -14,7 +14,7 @@ require (
 	github.com/stretchr/testify v1.3.0
 	github.com/velut/fsutils-go v0.1.4
 	github.com/zserge/lorca v0.1.8
-	golang.org/x/net v0.7.0 // indirect
+	golang.org/x/net v0.17.0 // indirect
 )
 
 // See https://github.com/velut/dlgs/tree/add-window-owner
